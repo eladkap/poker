@@ -1,0 +1,38 @@
+handCards
+cardValues
+handDiffValues - set(cardValues)
+cardSuits
+valuesHist
+suitsHist
+
+
+
+Royal Flush
+- first card value is 10 and "Straight Flush"
+
+Straight Flush
+- "Straight" and "Flush"
+
+Four of a kind
+- handDiffValuesNum == 2
+
+Full House
+- valuesHist contains 2 and 3
+
+Flush
+- all suits are identical
+
+Straight
+- ascending sequence
+
+Three of a kind
+ - handDiffValuesNum == 3 and valuesHist contains 3
+
+Two Pairs
+ - handDiffValuesNum == 3 and valuesHist contains 2 twice
+
+Pair
+- handDiffValuesNum == 4
+
+High Card
+- handDiffValuesNum == 5
