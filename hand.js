@@ -21,12 +21,19 @@ class Hand{
     return this.cards_list.length;
   }
 
-  addCard(deck, to_reveal){
-    let card = deck.popCard();
+  getCard(index){
+    return this.cards_list[index];
+  }
+
+  addCard(card, to_reveal){
     if (to_reveal){
       card.reveal();
     }
     this.cards_list.push(card);
+  }
+
+  popCard(index){
+    this.cards_list.splice(index, 1);
   }
 
   sortHand(){

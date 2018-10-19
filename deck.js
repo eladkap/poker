@@ -20,6 +20,10 @@ class Deck{
     return this.cards_list.length;
   }
 
+  getCard(index){
+    return this.cards_list[index];
+  }
+
   display(){
     for (let card of this.cards_list){
       card.display();
@@ -28,6 +32,10 @@ class Deck{
 
   popCard(){
     return this.cards_list.pop();
+  }
+
+  pushFront(card){
+    this.cards_list.unshift(card);
   }
 
   shuffleCards(){

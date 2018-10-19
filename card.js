@@ -8,13 +8,25 @@ class Card{
     this.w = w;
     this.h = h;
     this.visible = false;
+    this.is_chosen = false;
   }
 
   display(){
-    strokeWeight(1);
-    stroke(255);
+    // draw card frame
+    if (this.is_chosen){
+      strokeWeight(3);
+      stroke(0, 0, 255);
+    }
+    else{
+      strokeWeight(1);
+      stroke(255);
+    }
     fill(240);
     rect(this.x, this.y, this.w, this.h);
+
+    strokeWeight(1);
+    stroke(255);
+
     if (this.visible){
       textSize(CARD_FONT_SIZE);
       fill((this.shape_id % 2 == 1) * 255, 0, 0);
@@ -54,11 +66,19 @@ class Card{
     this.visible = value;
   }
 
+  isChosen(){
+    return this.is_chosen;
+  }
+
+  setChosen(value){
+    this.is_chosen = value;
+  }
+
   reveal(){
     this.visible = true;
   }
 
   isClicked(x, y){
-    return x > this.x && x < 2 * this.x + width && y > this.y && y < 2 * this.y + height;
+    return x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.h;
   }
 }

@@ -57,7 +57,7 @@ function getValuesByCount(hist, count){
   let card_values = [];
   for (let i = 2; i <= 14; i++){
     if (hist[i] == count){
-      card_values.push(CARD_SYMBOLS[i]);
+      card_values.push(i);
     }
   }
   return card_values;
@@ -114,7 +114,10 @@ function calcRank(hand){
 
   // Four of a Kind
   if (isFourOfAKind(handDiffValues)){
-    return [8, max(getValuesByCount(valuesHist, 2))];
+    let res = getValuesByCount(valuesHist, 2);
+    if (res.length > 0){
+      return [8, max(res)];
+    }
   }
 
   // Full House
@@ -134,17 +137,26 @@ function calcRank(hand){
 
   // Three of a Kind
   if  (isThreeOfAKind(handDiffValues, valuesHist)){
-    return [4, max(getValuesByCount(valuesHist, 3))];
+    let res = getValuesByCount(valuesHist, 3);
+    if (res.length > 0){
+      return [4, max(res)];
+    }
   }
 
   // Two Pairs
   if  (isTwoPairs(handDiffValues, valuesHist)){
-    return [3, max(getValuesByCount(valuesHist, 2))];
+    let res = getValuesByCount(valuesHist, 2);
+    if (res.length > 0){
+      return [3, max(res)];
+    }
   }
 
   // Pair
   if (isPair(handDiffValues)){
-    return [2, max(getValuesByCount(valuesHist, 2))];
+    let res = getValuesByCount(valuesHist, 2);
+    if (res.length > 0){
+      return [2, max(res)];
+    }
   }
 
   // High Card

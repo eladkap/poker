@@ -16,12 +16,15 @@ var deck;
 var dealer_hand;
 var player_hand;
 
+var playerCardsToSwap = [];
+
 var dealerRank = '-';
 var playerRank = '-';
 
 var newRoundButton;
 var revealDealerHandButton;
 var sortHandButton;
+var swapCardsButton;
 
 
 function setup() {
@@ -49,12 +52,17 @@ function setButtons(){
 	revealDealerHandButton = createButton('Reveal Dealer Hand');
 	revealDealerHandButton.position(width / 2, height / 2 + 100);
 	revealDealerHandButton.mousePressed(revealDealerHand);
-	revealDealerHandButton.show(); // hide
+	revealDealerHandButton.show();
 
 	sortHandButton = createButton('Sort Hand');
 	sortHandButton.position(width / 4 - 100, 100);
 	sortHandButton.mousePressed(sortPlayerHand);
 	sortHandButton.show();
+
+	swapCardsButton = createButton('Swap Cards');
+	swapCardsButton.position(width * 0.75, 100);
+	swapCardsButton.mousePressed(swapCards);
+	swapCardsButton.show();
 }
 
 function setRanks(){
@@ -84,6 +92,7 @@ function displayRanks(player_flag, dealer_flag){
 }
 
 function redrawGame(){
+	background(0);
 	player_hand.display();
 	dealer_hand.display();
 	displayRanks(true, false);
@@ -101,13 +110,15 @@ function resetRound(){
 	deck.shuffleCards();
 	player_hand = new Hand(width / 2 - CARD_WIDTH * 3, 100, deck, 1);
 	for (let i = 0; i < MAX_HAND_CARDS; i++){
-		player_hand.addCard(deck, to_reveal=true);
+		let card = deck.popCard();
+		player_hand.addCard(card, to_reveal=true);
 	}
 	player_hand.display();
 
 	dealer_hand = new Hand(width / 2 - CARD_WIDTH * 3, height - CARD_HEIGHT - 100, deck, 2);
 	for (let i = 0; i < MAX_HAND_CARDS; i++){
-		dealer_hand.addCard(deck, to_reveal=false);
+		let card = deck.popCard();
+		dealer_hand.addCard(card, to_reveal=false);
 	}
 	dealer_hand.display();
 	setRanks();
@@ -115,6 +126,7 @@ function resetRound(){
 
 	newRoundButton.hide();
 	revealDealerHandButton.show();
+	swapCardsButton.show();
 }
 
 function revealDealerHand(){
@@ -128,17 +140,57 @@ function revealDealerHand(){
 	checkWinner();
 }
 
+function swapCards(){
+	for (let i = player_hand.count() - 1; i >= 0; i--){
+		if (player_hand.getCard(i).isChosen()){
+			let card = player_hand.popCard(i);
+			deck.pushFront(card);
+			card = deck.popCard();
+			player_hand.addCard(card, to_reveal=true);
+		}
+	}
+	setRanks();
+	redrawGame();
+	swapCardsButton.hide();
+}
+
 function checkWinner(){
-	if (player_hand.rank() > dealer_hand.rank()){
+	let playerRank = player_hand.rank();
+	let dealerRank = dealer_hand.rank();
+
+	if (playerRank[0] > dealerRank[0]){
 		displayMessage('Player Wins!', color(0, 250, 0));
 	}
-	else if (player_hand.rank() < dealer_hand.rank()){
+	else if (playerRank[0] < dealerRank[0]){
+		displayMessage('Dealer Wins!', color(250, 0, 0));
+	}
+	else if (playerRank[1] > dealerRank[1]){
+		displayMessage('Player Wins!', color(0, 250, 0));
+	}
+	else if (playerRank[1] < dealerRank[1]){
 		displayMessage('Dealer Wins!', color(250, 0, 0));
 	}
 	else{
-		displayMessage('Tie!', color(255));
+			displayMessage('Tie!', color(255));
 	}
 	displayRanks(true, true);
 	newRoundButton.show();
 	revealDealerHandButton.hide();
+}
+
+function mousePressed(){
+	for (var card of player_hand.cards_list){
+		if (card.isClicked(mouseX, mouseY)){
+			if (!card.isChosen()){
+				card.setChosen(true);
+				playerCardsToSwap.push(card);
+				card.display();
+			}
+			else{
+				card.setChosen(false);
+				card.display();
+			}
+			return;
+		}
+	}
 }
